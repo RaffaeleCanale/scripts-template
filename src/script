@@ -1,0 +1,75 @@
+#!/bin/bash
+
+function declareConstants() {
+    return 0
+}
+
+function printHelp() {
+    cat << EOF
+
+    TODO
+EOF
+    for module in "__ROOT__/modules/"*; do
+        local moduleName=$(basename "$module")
+
+        echo
+        echo "    ${PROGNAME} `green $moduleName`"
+
+        source "$module"
+        if type modulePrintHelp &>/dev/null; then
+            modulePrintHelp
+        fi
+    done
+}
+
+function loadOptions() {
+    unusedBehaviour="IGNORE"
+    getOpt "--autocomplete" autocomplete
+}
+
+function autocomplete() {
+    if [ $# -gt 1 ]; then
+        # Targets a module's autocomplete
+        local module="__ROOT__/modules/$2"
+        source "$module"
+        if type autocomplete &>/dev/null; then
+            shift
+            shift
+            autocomplete "$@"
+        fi
+    else
+        ls "__ROOT__/modules"
+    fi
+}
+
+
+function run () {
+    if $autocomplete; then
+        autocomplete "$@"
+        return 0
+    fi
+
+    hasMoreArgs $#
+
+    local module="__ROOT__/modules/$1"
+
+    if [ ! -f "$module" ]; then
+        stop "Unknown mode: $1"
+    fi
+
+
+    source "$module"
+    shift
+    ARGUMENTS=("$@")
+    if type moduleLoadOptions &>/dev/null; then
+        moduleLoadOptions
+    fi
+
+    if [ $unusedBehaviour != "IGNORE" ]; then
+        checkUnused
+    fi
+
+    moduleRun "${ARGUMENTS[@]:+${ARGUMENTS[@]}}"
+}
+
+source "__STARTER__@v2"

@@ -1,0 +1,9 @@
+{
+    "main": "script",
+    "files": [
+        {
+            "name": "scripts-script",
+            "output": "config.properties"
+        }
+    ]
+}

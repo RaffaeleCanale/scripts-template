@@ -1,0 +1,18 @@
+#!/bin/bash
+function modulePrintHelp() {
+    cat << EOF
+        TODO
+EOF
+}
+
+function moduleLoadOptions() {
+    return 0
+}
+
+function autocomplete() {
+    return 0
+}
+
+function moduleRun() {
+    return 0
+}

@@ -1,0 +1,17 @@
+__script()
+{
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    case "$prev" in
+        "script" )
+            COMPREPLY=( $(compgen -W "`script --autocomplete`" -- ${cur}) )
+            ;;
+        * )
+            COMPREPLY=( $(compgen -W "`script --autocomplete "${COMP_WORDS[@]}"`" -- ${cur}) )
+            ;;
+    esac
+}
+
+complete -F __script script
